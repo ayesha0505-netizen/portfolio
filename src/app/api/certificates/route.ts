@@ -14,16 +14,16 @@ export interface CertificateItem {
   createdAt: string;
 }
 
-const DEFAULT_ADMIN_PASSCODE = "ayeSha@1972";
-
 function getAdminPasscode(): string {
-  return process.env.ADMIN_PASSCODE || DEFAULT_ADMIN_PASSCODE;
+  return (process.env.ADMIN_PASSCODE || "").trim();
 }
 
 function verifyAuth(req: NextRequest): boolean {
+  const actual = getAdminPasscode();
+  if (!actual) return false;
+
   const authHeader = req.headers.get("authorization") || req.headers.get("x-admin-passcode");
   const provided = authHeader?.replace(/^Bearer\s+/i, "").trim();
-  const actual = getAdminPasscode().trim();
   return Boolean(provided && provided === actual);
 }
 
