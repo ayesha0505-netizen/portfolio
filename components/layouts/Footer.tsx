@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center gap-3 text-center md:text-left">
           <Link
             className="font-headline-md text-headline-md font-bold text-surface-container-lowest flex items-center hover:opacity-90 transition-opacity"
-            href="#home"
+            href="/"
           >
             Ayesha Naaz<span className="text-primary">.</span>
           </Link>
@@ -24,18 +24,18 @@ export default function Footer() {
 
         {/* Footer Navigation Links */}
         <nav className="flex flex-wrap items-center justify-center gap-6">
-          <a
+          <Link
             className="font-label-xs text-label-xs text-secondary-fixed-dim hover:text-surface-container-lowest transition-colors"
-            href="#home"
+            href="/privacy"
           >
             Privacy Policy
-          </a>
-          <a
+          </Link>
+          <Link
             className="font-label-xs text-label-xs text-secondary-fixed-dim hover:text-surface-container-lowest transition-colors"
-            href="#home"
+            href="/terms"
           >
             Terms of Service
-          </a>
+          </Link>
           <a
             className="font-label-xs text-label-xs text-secondary-fixed-dim hover:text-surface-container-lowest transition-colors flex items-center gap-1"
             href="https://github.com/ayesha0505-netizen"

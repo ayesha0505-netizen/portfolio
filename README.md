@@ -1,6 +1,8 @@
 # Ayesha Naaz — Personal Portfolio
 
 > **Aspiring Software Developer** passionate about building modern web and mobile applications with JavaScript, TypeScript, React, and Next.js. Exploring React Native and Java.
+> 
+> *Learning. Building. Growing.*
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.4.5-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-blue?style=flat-square&logo=react)](https://react.dev/)
@@ -9,73 +11,83 @@
 
 ---
 
-## 🌟 About The Portfolio
+## 🌟 About Me & The Portfolio
 
-This is the personal portfolio website of **Ayesha Naaz**, an Information Technology undergraduate at **Narula Institute of Technology**.
+I'm **Ayesha Naaz**, an undergraduate Information Technology student at **Narula Institute of Technology**. I'm passionate about developing responsive web platforms and cross-platform mobile applications, focusing on clean user interfaces, modern component architectures, and solid computer science fundamentals.
 
-Built from the ground up using **Next.js 16 (Turbopack, App Router)**, **React 19**, and **Tailwind CSS v4**, this portfolio showcases authentic personal projects, core technical proficiencies, verified credentials, and continuous hands-on learning.
-
----
-
-## 🛠️ Technical Stack & Skills
-
-* **Languages**: JavaScript (ES6+), TypeScript, Java, C
-* **Frontend**: React.js, Next.js (App Router), Tailwind CSS v4, HTML5, CSS3
-* **Mobile**: React Native (Cross-platform mobile development)
-* **Backend & APIs**: RESTful APIs, JSON Integration, Server Components & Route Handlers
-* **Database**: MySQL, MongoDB (Fundamentals)
-* **Tools & Workflow**: Git, GitHub, VS Code, Postman, npm
-* **Computer Science Fundamentals**: Data Structures & Algorithms, Object-Oriented Programming (OOP), DBMS, Computer Networks
+This portfolio is built with **Next.js 16 (App Router & Turbopack)**, **React 19**, and **Tailwind CSS v4**, featuring:
+* Bold crimson visual identity with high-contrast accessibility.
+* Interactive 3D and motion elements powered by **Three.js** and **Motion**.
+* Authentic showcase of practical skills, projects, and verified credentials.
 
 ---
 
-## 🚀 Key Sections
+## 🛠️ Technical Skills & Proficiencies
 
-* **Hero**: Personal introduction highlighting an authentic student developer perspective — *Learning. Building. Growing.*
-* **About Me**: Narrative on IT education, development journey, and a responsive interactive photo card.
-* **Skills Bento Matrix**: Comprehensive, honest breakdown of current technical capabilities.
-* **Projects Showcase**: Section dedicated to highlighting web and mobile applications.
-* **Verified Certifications**: Interactive credentials display with a full-screen image lightbox viewer.
-* **Contact & Connect**: Direct inquiry channel and professional profile links.
+Structured across 7 core disciplines reflecting hands-on coursework and practical development:
 
----
+### 1. Languages
+* **Comfortable**: HTML5, CSS3, JavaScript (ES6+)
+* **Familiar / Basic**: TypeScript, Python, C
+* **Currently Learning**: Java
 
-## 📂 Project Structure
+### 2. Frontend Development
+* **Core Stack**: React.js, Next.js (App Router), Tailwind CSS v4, shadcn/ui
+* **State Management**: Redux Toolkit (Learning)
 
-```text
-myPortfolio/
-└── ayesha-portfolio/
-    ├── components/
-    │   ├── layouts/
-    │   │   ├── Navbar.tsx             # Responsive navigation bar
-    │   │   └── Footer.tsx             # Footer with copyright & social links
-    │   └── sections/
-    │       ├── Hero.tsx               # Introduction section
-    │       ├── About.tsx              # Bio & education showcase
-    │       ├── Skills.tsx             # 7-category technical skills matrix
-    │       ├── Projects.tsx           # Projects showcase
-    │       ├── Certifications.tsx     # Certifications & credential showcase
-    │       └── Contact.tsx            # Contact form & communication channels
-    ├── public/
-    │   ├── images/                    # Local image assets
-    │   └── favicon.ico
-    ├── src/
-    │   └── app/
-    │       ├── layout.tsx             # Root metadata & layout
-    │       ├── page.tsx               # Main single-page application
-    │       └── globals.css            # Tailwind CSS styling
-    ├── next.config.ts                 # Next.js configuration & image remote patterns
-    └── package.json                   # Project dependencies and scripts
-```
+### 3. Mobile App Development
+* **Framework**: React Native
+* **Ecosystem & Tooling**: Expo, React Navigation, AsyncStorage
+
+### 4. Backend & APIs
+* **Runtime & Services**: Node.js, REST APIs, Authentication
+* **Enterprise Framework**: Spring Boot (Learning)
+
+### 5. Database & Storage
+* **Relational / SQL**: MySQL, SQL
+* **ORM & Cloud**: Prisma ORM, Firebase
+
+### 6. Tools & Deployment
+* **Workflow**: VS Code, Vercel, Git, GitHub
+* **Containers & Design**: Docker, Figma
+
+### 7. Computer Science Fundamentals
+* **Systems & Theory**: Object-Oriented Programming (OOP), Database Management Systems (DBMS), Operating Systems, Computer Networks
+* **Problem Solving**: Data Structures & Algorithms (DSA)
 
 ---
 
-## 💻 Local Development
+## 📂 Navigation & Portfolio Sections
+
+* **Home (`#home`)**: Hero introduction, dynamic video visual, status indicators, and direct calls to action.
+* **About Me (`#about`)**: Academic background at Narula Institute of Technology, development journey, and interactive tilted photo card.
+* **Skills (`#skills`)**: 7-tier technical skills matrix with proficiency badges and categorization.
+* **Projects (`#projects`)**: Showcase dedicated to authentic web and mobile applications with category filtering.
+* **Certifications & Learning (`#certifications`)**: Verified credentials showcase with high-resolution image lightbox viewer.
+* **Contact (`#contact`)**: Interactive inquiry form with direct communication channels.
+
+---
+
+## 💻 Tech Stack & Dependencies
+
+| Category | Technologies |
+|---|---|
+| **Framework** | Next.js 16.4.5 (App Router, Turbopack) |
+| **Language** | TypeScript 5 |
+| **Frontend Library** | React 19.3.0 |
+| **Styling** | Tailwind CSS v4, @tailwindcss/turbopack |
+| **3D & Animation** | Three.js, @react-three/fiber, @react-three/drei, Motion |
+| **Icons** | Lucide React |
+| **Deployment** | Vercel |
+
+---
+
+## 🚀 Getting Started Locally
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/ayesha0505-netizen/myPortfolio.git
-cd myPortfolio/ayesha-portfolio
+git clone https://github.com/ayesha0505-netizen/portfolio.git
+cd portfolio
 ```
 
 ### 2. Install dependencies
@@ -83,14 +95,23 @@ cd myPortfolio/ayesha-portfolio
 npm install
 ```
 
-### 3. Run the development server
+### 3. Configure environment variables (Optional)
+Create a `.env.local` file:
+```env
+# Optional: Private passcode for certificate management
+ADMIN_PASSCODE=your_secret_passcode
+
+# Optional: Cloud profile picture URL (Google Drive, Cloudinary, etc.)
+NEXT_PUBLIC_PROFILE_IMAGE_URL=""
+```
+
+### 4. Start the development server
 ```bash
 npm run dev
 ```
-
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 4. Build for production
+### 5. Build for production
 ```bash
 npm run build
 ```
@@ -100,5 +121,7 @@ npm run build
 ## 📬 Contact & Connect
 
 * **Developer**: Ayesha Naaz
-* **Email**: [ayeshanaaz.dev@gmail.com](mailto:ayeshanaaz.dev@gmail.com)
+* **Education**: B.Tech in Information Technology — Narula Institute of Technology
+* **Email**: [ayeshait889@gmail.com](mailto:ayeshait889@gmail.com)
+* **LinkedIn**: [linkedin.com/in/ayesha-naaz-11296333a](https://www.linkedin.com/in/ayesha-naaz-11296333a)
 * **GitHub**: [@ayesha0505-netizen](https://github.com/ayesha0505-netizen)

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import os from "os";
 
 export interface CertificateItem {
   id: string;
@@ -26,30 +27,66 @@ function verifyAuth(req: NextRequest): boolean {
   return Boolean(provided && provided === actual);
 }
 
-function getDataFilePath(): string {
+function getTmpFilePath(): string {
+  return path.join(os.tmpdir(), "certificates.json");
+}
+
+function getBundledFilePath(): string {
   return path.join(process.cwd(), "data", "certificates.json");
 }
 
 function readCertificates(): CertificateItem[] {
+  // 1. Try reading from /tmp first (holds latest additions in serverless runtime)
   try {
-    const filePath = getDataFilePath();
-    if (!fs.existsSync(filePath)) {
-      return [];
+    const tmpPath = getTmpFilePath();
+    if (fs.existsSync(tmpPath)) {
+      const raw = fs.readFileSync(tmpPath, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
     }
-    const raw = fs.readFileSync(filePath, "utf-8");
-    return JSON.parse(raw);
   } catch {
-    return [];
+    // Ignore tmp read errors
   }
+
+  // 2. Try reading from bundled static JSON file in the project
+  try {
+    const bundledPath = getBundledFilePath();
+    if (fs.existsSync(bundledPath)) {
+      const raw = fs.readFileSync(bundledPath, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
+    }
+  } catch {
+    // Ignore bundled read errors
+  }
+
+  return [];
 }
 
 function writeCertificates(items: CertificateItem[]): void {
-  const filePath = getDataFilePath();
-  const dir = path.dirname(filePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  // 1. Always write to /tmp (guaranteed writable on Vercel / AWS Lambda)
+  try {
+    const tmpPath = getTmpFilePath();
+    fs.writeFileSync(tmpPath, JSON.stringify(items, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("Could not write to tmpdir:", err);
   }
-  fs.writeFileSync(filePath, JSON.stringify(items, null, 2), "utf-8");
+
+  // 2. In local dev environment, also persist to project data/certificates.json
+  try {
+    const localPath = getBundledFilePath();
+    const dir = path.dirname(localPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(localPath, JSON.stringify(items, null, 2), "utf-8");
+  } catch {
+    // Expected to fail on read-only serverless filesystems (/var/task)
+  }
 }
 
 function parseGoogleDriveUrl(url: string): string {
@@ -105,18 +142,25 @@ export async function POST(req: NextRequest) {
         sourceType = "gallery";
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
+        const mimeType = file.type || "image/jpeg";
 
-        const uploadsDir = path.join(process.cwd(), "public", "uploads", "certificates");
-        if (!fs.existsSync(uploadsDir)) {
-          fs.mkdirSync(uploadsDir, { recursive: true });
+        // Store as Base64 data URL to be completely serverless-safe
+        imageUrl = `data:${mimeType};base64,${buffer.toString("base64")}`;
+
+        // Also attempt writing to local uploads directory in local dev
+        try {
+          const uploadsDir = path.join(process.cwd(), "public", "uploads", "certificates");
+          if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
+          }
+          const safeExt = path.extname(file.name) || ".jpg";
+          const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${safeExt}`;
+          const filePath = path.join(uploadsDir, filename);
+          fs.writeFileSync(filePath, buffer);
+          imageUrl = `/uploads/certificates/${filename}`;
+        } catch {
+          // If read-only fs (Vercel), imageUrl remains the base64 data URL
         }
-
-        const safeExt = path.extname(file.name) || ".jpg";
-        const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${safeExt}`;
-        const filePath = path.join(uploadsDir, filename);
-
-        fs.writeFileSync(filePath, buffer);
-        imageUrl = `/uploads/certificates/${filename}`;
       } else if (driveUrl) {
         sourceType = "drive";
         imageUrl = parseGoogleDriveUrl(driveUrl);
@@ -194,7 +238,7 @@ export async function DELETE(req: NextRequest) {
         try {
           fs.unlinkSync(filePath);
         } catch {
-          // ignore deletion error if file already removed
+          // ignore deletion error if filesystem is read-only
         }
       }
     }
