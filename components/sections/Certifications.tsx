@@ -30,7 +30,6 @@ export interface CertificateItem {
 
 const STORAGE_KEY_AUTH = "ayesha_cert_admin_token";
 const STORAGE_KEY_DATA = "ayesha_certificates_cache";
-const DEFAULT_PASSCODE = "ayeSha@1972";
 
 function parseDriveUrl(url: string): string {
   const trimmed = url.trim();
@@ -158,8 +157,10 @@ export default function Certifications() {
     loadCertificates();
   }, []);
 
-  // Handle Admin Passcode Login
-  const handleAuthSubmit = (e: React.FormEvent) => {
+  // Handle Admin Passcode Login via Secure Server Verification
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError("");
 
@@ -169,15 +170,27 @@ export default function Certifications() {
       return;
     }
 
-    // Default check (can be changed via environment or configured)
-    if (passcode === DEFAULT_PASSCODE) {
-      setIsAdmin(true);
-      setAdminToken(passcode);
-      sessionStorage.setItem(STORAGE_KEY_AUTH, passcode);
-      setIsAuthModalOpen(false);
-      setEnteredPasscode("");
-    } else {
-      setAuthError("Incorrect passcode. Only the portfolio owner can manage certificates.");
+    setIsVerifying(true);
+    try {
+      const res = await fetch("/api/certificates/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ passcode }),
+      });
+
+      if (res.ok) {
+        setIsAdmin(true);
+        setAdminToken(passcode);
+        sessionStorage.setItem(STORAGE_KEY_AUTH, passcode);
+        setIsAuthModalOpen(false);
+        setEnteredPasscode("");
+      } else {
+        setAuthError("Incorrect passcode. Only the portfolio owner can manage certificates.");
+      }
+    } catch {
+      setAuthError("Verification failed. Please check your connection.");
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -621,9 +634,10 @@ export default function Certifications() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-full bg-primary text-on-primary hover:opacity-90 text-xs font-bold shadow-md cursor-pointer active:scale-95 transition-transform"
+                  disabled={isVerifying}
+                  className="px-5 py-2 rounded-full bg-primary text-on-primary hover:opacity-90 disabled:opacity-50 text-xs font-bold shadow-md cursor-pointer active:scale-95 transition-transform"
                 >
-                  Unlock Admin
+                  {isVerifying ? "Verifying..." : "Unlock Admin"}
                 </button>
               </div>
             </form>
