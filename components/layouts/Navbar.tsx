@@ -44,7 +44,7 @@ export default function Navbar() {
         <div className="flex items-center space-x-4">
           <a
             className="hidden sm:inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-on-surface text-surface-container-lowest text-sm hover:bg-primary hover:text-on-primary transition-all duration-200 shadow-sm active:scale-95 font-bold"
-            href="/#contact"
+            href="#contact"
           >
             Contact
           </a>
@@ -79,7 +79,7 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="/#contact"
+            href="#contact"
             onClick={() => setMobileMenuOpen(false)}
             className="block text-center mt-3 py-2.5 rounded-full bg-on-surface text-surface-container-lowest font-bold text-sm shadow-sm"
           >
