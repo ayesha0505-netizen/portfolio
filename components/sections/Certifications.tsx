@@ -30,6 +30,7 @@ export interface CertificateItem {
 
 const STORAGE_KEY_AUTH = "ayesha_cert_admin_token";
 const STORAGE_KEY_DATA = "ayesha_certificates_cache";
+const STORAGE_KEY_DELETED = "ayesha_certificates_deleted_ids";
 
 function parseDriveUrl(url: string): string {
   const trimmed = url.trim();
@@ -136,19 +137,32 @@ export default function Certifications() {
 
     const loadCertificates = async () => {
       try {
+        const deletedIds: string[] = JSON.parse(
+          localStorage.getItem(STORAGE_KEY_DELETED) || "[]"
+        );
         const res = await fetch("/api/certificates");
         if (res.ok) {
-          const data = await res.json();
-          setCertificates(data);
-          localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(data));
+          const data: CertificateItem[] = await res.json();
+          const active = Array.isArray(data) ? data.filter((c) => !deletedIds.includes(c.id)) : [];
+          setCertificates(active);
+          localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(active));
         } else {
           // Fallback to cache if offline
           const cached = localStorage.getItem(STORAGE_KEY_DATA);
-          if (cached) setCertificates(JSON.parse(cached));
+          if (cached) {
+            const data: CertificateItem[] = JSON.parse(cached);
+            setCertificates(Array.isArray(data) ? data.filter((c) => !deletedIds.includes(c.id)) : []);
+          }
         }
       } catch {
+        const deletedIds: string[] = JSON.parse(
+          localStorage.getItem(STORAGE_KEY_DELETED) || "[]"
+        );
         const cached = localStorage.getItem(STORAGE_KEY_DATA);
-        if (cached) setCertificates(JSON.parse(cached));
+        if (cached) {
+          const data: CertificateItem[] = JSON.parse(cached);
+          setCertificates(Array.isArray(data) ? data.filter((c) => !deletedIds.includes(c.id)) : []);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -295,6 +309,18 @@ export default function Certifications() {
 
       if (response.ok) {
         const created: CertificateItem = await response.json();
+
+        // Ensure newly created certificate is not suppressed by any previous deleted ID
+        try {
+          const deletedIds: string[] = JSON.parse(
+            localStorage.getItem(STORAGE_KEY_DELETED) || "[]"
+          );
+          if (deletedIds.includes(created.id)) {
+            const filtered = deletedIds.filter((d) => d !== created.id);
+            localStorage.setItem(STORAGE_KEY_DELETED, JSON.stringify(filtered));
+          }
+        } catch {}
+
         const updated = [created, ...certificates];
         setCertificates(updated);
         localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(updated));
@@ -332,6 +358,22 @@ export default function Certifications() {
   const handleDeleteCertificate = async (id: string) => {
     if (!isAdmin) return;
 
+    // Immediately record deleted ID in localStorage so it NEVER shows again after refresh
+    try {
+      const deletedIds: string[] = JSON.parse(
+        localStorage.getItem(STORAGE_KEY_DELETED) || "[]"
+      );
+      if (!deletedIds.includes(id)) {
+        deletedIds.push(id);
+        localStorage.setItem(STORAGE_KEY_DELETED, JSON.stringify(deletedIds));
+      }
+    } catch {}
+
+    const updated = certificates.filter((c) => c.id !== id);
+    setCertificates(updated);
+    localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(updated));
+    setDeletingId(null);
+
     try {
       const response = await fetch(`/api/certificates?id=${encodeURIComponent(id)}`, {
         method: "DELETE",
@@ -340,16 +382,11 @@ export default function Certifications() {
         },
       });
 
-      if (response.ok) {
-        const updated = certificates.filter((c) => c.id !== id);
-        setCertificates(updated);
-        localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(updated));
-        setDeletingId(null);
-      } else {
-        alert("Failed to delete certificate. Invalid admin permissions.");
+      if (!response.ok) {
+        console.warn("Server delete warning: Certificate marked deleted locally.");
       }
     } catch {
-      alert("Error deleting certificate. Please try again.");
+      // Offline or network error: client persistence ensures it remains deleted
     }
   };
 

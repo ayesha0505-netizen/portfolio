@@ -31,40 +31,72 @@ function getTmpFilePath(): string {
   return path.join(os.tmpdir(), "certificates.json");
 }
 
+function getDeletedIdsFilePath(): string {
+  return path.join(os.tmpdir(), "deleted_certificate_ids.json");
+}
+
 function getBundledFilePath(): string {
   return path.join(process.cwd(), "data", "certificates.json");
 }
 
+function readDeletedIds(): string[] {
+  try {
+    const p = getDeletedIdsFilePath();
+    if (fs.existsSync(p)) {
+      const raw = fs.readFileSync(p, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch {}
+  return [];
+}
+
+function addDeletedId(id: string): void {
+  try {
+    const ids = readDeletedIds();
+    if (!ids.includes(id)) {
+      ids.push(id);
+      fs.writeFileSync(getDeletedIdsFilePath(), JSON.stringify(ids), "utf-8");
+    }
+  } catch {}
+}
+
 function readCertificates(): CertificateItem[] {
-  // 1. Try reading from /tmp first (holds latest additions in serverless runtime)
+  const deletedIds = readDeletedIds();
+  let items: CertificateItem[] | null = null;
+
+  // 1. Try reading from /tmp first (holds latest additions/deletions in serverless runtime)
   try {
     const tmpPath = getTmpFilePath();
     if (fs.existsSync(tmpPath)) {
       const raw = fs.readFileSync(tmpPath, "utf-8");
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+      if (Array.isArray(parsed)) {
+        items = parsed;
       }
     }
   } catch {
     // Ignore tmp read errors
   }
 
-  // 2. Try reading from bundled static JSON file in the project
-  try {
-    const bundledPath = getBundledFilePath();
-    if (fs.existsSync(bundledPath)) {
-      const raw = fs.readFileSync(bundledPath, "utf-8");
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        return parsed;
+  // 2. If /tmp did not have a file, fallback to bundled static JSON in the project
+  if (items === null) {
+    try {
+      const bundledPath = getBundledFilePath();
+      if (fs.existsSync(bundledPath)) {
+        const raw = fs.readFileSync(bundledPath, "utf-8");
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          items = parsed;
+        }
       }
+    } catch {
+      // Ignore bundled read errors
     }
-  } catch {
-    // Ignore bundled read errors
   }
 
-  return [];
+  const result = items || [];
+  return result.filter((item) => !deletedIds.includes(item.id));
 }
 
 function writeCertificates(items: CertificateItem[]): void {
@@ -228,6 +260,8 @@ export async function DELETE(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    addDeletedId(id);
 
     const current = readCertificates();
     const itemToDelete = current.find((c) => c.id === id);
