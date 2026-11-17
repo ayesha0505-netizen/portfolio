@@ -126,6 +126,23 @@ export default function Hero() {
     }
   };
 
+  const handleScrollTo = (id: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.history.pushState(null, "", `#${id}`);
+      if (id === "contact") {
+        setTimeout(() => {
+          const input = element.querySelector<HTMLInputElement>("input[type='text'], textarea");
+          input?.focus({ preventScroll: true });
+        }, 600);
+      }
+    } else {
+      window.location.hash = id;
+    }
+  };
+
   return (
     <section
       id="home"
@@ -176,7 +193,8 @@ export default function Hero() {
           <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mt-6 sm:mt-8">
             <a
               href="#projects"
-              className="group inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full bg-white text-[#a60122] font-semibold text-xs border border-white hover:bg-white/90 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg"
+              onClick={handleScrollTo("projects")}
+              className="group inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full bg-white text-[#a60122] font-semibold text-xs border border-white hover:bg-white/90 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
             >
               <span className="tracking-wide">View My Work</span>
               <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-200" />
@@ -184,7 +202,8 @@ export default function Hero() {
 
             <a
               href="#contact"
-              className="group inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full bg-transparent border border-white text-white font-semibold text-xs hover:bg-white/10 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg"
+              onClick={handleScrollTo("contact")}
+              className="group inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full bg-transparent border border-white text-white font-semibold text-xs hover:bg-white/10 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
             >
               <span className="tracking-wide">Contact Me</span>
             </a>

@@ -12,20 +12,47 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    try {
+      // Send directly to Ayesha's inbox via FormSubmit AJAX
+      const res = await fetch("https://formsubmit.co/ajax/ayeshait889@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          _subject: `Portfolio Message from ${formData.name}`,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Direct submit failed");
+      }
+    } catch {
+      // Fallback: trigger user's default email client prefilled so message is never lost
+      const mailtoUrl = `mailto:ayeshait889@gmail.com?subject=${encodeURIComponent(
+        `Portfolio Message from ${formData.name}`
+      )}&body=${encodeURIComponent(
+        `Hi Ayesha,\n\n${formData.message}\n\n---\nFrom: ${formData.name}\nEmail: ${formData.email}`
+      )}`;
+      window.location.href = mailtoUrl;
+    } finally {
       setIsSubmitting(false);
       setIsSuccess(true);
       setFormData({ name: "", email: "", message: "" });
-    }, 900);
+    }
   };
 
   return (
     <section
-      className="relative bg-on-background text-surface-container-lowest overflow-hidden pt-20 pb-28"
+      className="relative bg-on-background text-surface-container-lowest overflow-hidden pt-20 pb-28 scroll-mt-16 sm:scroll-mt-20"
       id="contact"
     >
       {/* Giant Architectural Background Statement Typography */}
@@ -104,13 +131,21 @@ export default function Contact() {
               <p className="font-body-md text-white/90 max-w-md mx-auto">
                 Thank you for reaching out. I&apos;ve received your message and will respond to your email promptly.
               </p>
-              <button
-                type="button"
-                onClick={() => setIsSuccess(false)}
-                className="mt-4 px-6 py-2.5 rounded-full bg-on-background text-white font-label-md text-label-md hover:bg-white hover:text-primary-container transition-colors shadow-md font-semibold"
-              >
-                Send Another Message
-              </button>
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <a
+                  href="mailto:ayeshait889@gmail.com"
+                  className="px-6 py-2.5 rounded-full bg-white text-primary font-label-md text-xs font-bold hover:bg-white/90 transition-colors shadow-md"
+                >
+                  Direct Email: ayeshait889@gmail.com
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setIsSuccess(false)}
+                  className="px-6 py-2.5 rounded-full bg-on-background text-white font-label-md text-xs hover:bg-white hover:text-primary-container transition-colors shadow-md font-semibold cursor-pointer"
+                >
+                  Send Another Message
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">

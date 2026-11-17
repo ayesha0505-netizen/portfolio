@@ -79,7 +79,15 @@ export default function About() {
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <a
                 href="#contact"
-                className="px-6 py-2.5 rounded-full bg-white text-[#a60122] text-xs sm:text-sm font-bold hover:bg-white/90 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2"
+                onClick={(e) => {
+                  const el = document.getElementById("contact");
+                  if (el) {
+                    e.preventDefault();
+                    el.scrollIntoView({ behavior: "smooth", block: "start" });
+                    window.history.pushState(null, "", "#contact");
+                  }
+                }}
+                className="px-6 py-2.5 rounded-full bg-white text-[#a60122] text-xs sm:text-sm font-bold hover:bg-white/90 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2 cursor-pointer"
               >
                 <span>Let&apos;s Connect</span>
                 <ArrowRight className="w-3.5 h-3.5" />
