@@ -10,11 +10,11 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type ProficiencyLevel = "comfortable" | "basic" | "learning";
+export type ProficiencyLevel = "standard" | "learning";
 
 export interface SkillItem {
   name: string;
-  level: ProficiencyLevel;
+  level?: ProficiencyLevel;
 }
 
 export interface SkillCategory {
@@ -34,13 +34,13 @@ const skillCategories: SkillCategory[] = [
     icon: Terminal,
     description: "Core programming and scripting languages for frontend, backend, and algorithmic problem solving.",
     skills: [
-      { name: "JavaScript", level: "comfortable" },
-      { name: "TypeScript", level: "basic" },
+      { name: "JavaScript" },
+      { name: "TypeScript" },
       { name: "Java", level: "learning" },
-      { name: "Python", level: "basic" },
-      { name: "C", level: "basic" },
-      { name: "HTML5", level: "comfortable" },
-      { name: "CSS3", level: "comfortable" },
+      { name: "Python" },
+      { name: "C" },
+      { name: "HTML5" },
+      { name: "CSS3" },
     ],
   },
   {
@@ -50,17 +50,17 @@ const skillCategories: SkillCategory[] = [
     icon: Layers,
     description: "Modern component architectures, web & mobile app frameworks, and state management.",
     skills: [
-      { name: "React.js", level: "comfortable" },
-      { name: "Next.js", level: "basic" },
-      { name: "React Native", level: "basic" },
-      { name: "Node.js", level: "basic" },
+      { name: "React.js" },
+      { name: "Next.js" },
+      { name: "React Native" },
+      { name: "Node.js" },
       { name: "Spring Boot", level: "learning" },
-      { name: "Tailwind CSS", level: "comfortable" },
+      { name: "Tailwind CSS" },
       { name: "Redux Toolkit", level: "learning" },
-      { name: "shadcn/ui", level: "basic" },
-      { name: "Expo", level: "basic" },
-      { name: "React Navigation", level: "basic" },
-      { name: "AsyncStorage", level: "basic" },
+      { name: "shadcn/ui" },
+      { name: "Expo" },
+      { name: "React Navigation" },
+      { name: "AsyncStorage" },
     ],
   },
   {
@@ -70,10 +70,10 @@ const skillCategories: SkillCategory[] = [
     icon: Database,
     description: "Relational databases, SQL querying, schema modeling, ORMs, and cloud data platforms.",
     skills: [
-      { name: "MySQL", level: "comfortable" },
-      { name: "PostgreSQL", level: "basic" },
-      { name: "Prisma ORM", level: "basic" },
-      { name: "Firebase", level: "basic" },
+      { name: "MySQL" },
+      { name: "PostgreSQL" },
+      { name: "Prisma ORM" },
+      { name: "Firebase" },
     ],
   },
   {
@@ -83,13 +83,13 @@ const skillCategories: SkillCategory[] = [
     icon: Wrench,
     description: "Version control, API testing, containerization, cloud deployment, and design tooling.",
     skills: [
-      { name: "Git", level: "basic" },
-      { name: "GitHub", level: "basic" },
-      { name: "Docker", level: "basic" },
-      { name: "Postman", level: "basic" },
-      { name: "Vercel", level: "comfortable" },
-      { name: "Figma", level: "basic" },
-      { name: "VS Code", level: "comfortable" },
+      { name: "Git" },
+      { name: "GitHub" },
+      { name: "Docker" },
+      { name: "Postman" },
+      { name: "Vercel" },
+      { name: "Figma" },
+      { name: "VS Code" },
     ],
   },
   {
@@ -100,12 +100,12 @@ const skillCategories: SkillCategory[] = [
     description: "Core computer science fundamentals, systems architecture, secure protocols, and software design.",
     skills: [
       { name: "Data Structures & Algorithms (DSA)", level: "learning" },
-      { name: "Object-Oriented Programming (OOP)", level: "basic" },
-      { name: "DBMS", level: "basic" },
-      { name: "Operating Systems", level: "basic" },
-      { name: "Computer Networks", level: "basic" },
-      { name: "REST APIs", level: "basic" },
-      { name: "Authentication", level: "basic" },
+      { name: "Object-Oriented Programming (OOP)" },
+      { name: "DBMS" },
+      { name: "Operating Systems" },
+      { name: "Computer Networks" },
+      { name: "REST APIs" },
+      { name: "Authentication" },
     ],
   },
 ];
@@ -143,19 +143,9 @@ export default function Skills() {
             </div>
 
             {/* Proficiency Legend */}
-            <div className="flex flex-wrap items-center gap-3.5 text-[11px]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="font-medium text-on-surface">Comfortable</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
-                <span className="font-medium text-on-surface">Basic Knowledge</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                <span className="font-medium text-on-surface">Currently Learning</span>
-              </div>
+            <div className="flex items-center gap-1.5 text-[11px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              <span className="font-medium text-on-surface">Currently Learning</span>
             </div>
           </div>
 
@@ -203,32 +193,23 @@ export default function Skills() {
                         {category.skills.map((skill) => {
                           const isHovered = activeSkill === skill.name;
                           const isLearning = skill.level === "learning";
-                          const isComfortable = skill.level === "comfortable";
 
                           return (
                             <span
                               key={skill.name}
                               onMouseEnter={() => setActiveSkill(skill.name)}
                               onMouseLeave={() => setActiveSkill(null)}
-                              className={`px-2.5 py-1 rounded-full text-xs font-normal transition-all duration-150 cursor-pointer select-none border inline-flex items-center gap-1.5 ${
+                              className={`px-3 py-1 rounded-full text-xs font-normal transition-all duration-150 cursor-pointer select-none border inline-flex items-center gap-1.5 ${
                                 isHovered
                                   ? "bg-surface-container-lowest border-[#d4252c] text-[#d4252c] scale-105 shadow-2xs"
                                   : isLearning
                                   ? "bg-amber-50/80 border-amber-200/80 text-amber-900 hover:border-[#d4252c] hover:text-[#d4252c]"
-                                  : isComfortable
-                                  ? "bg-emerald-50/80 border-emerald-200/80 text-emerald-900 hover:border-[#d4252c] hover:text-[#d4252c]"
                                   : "bg-surface-container-low border-surface-container-highest/60 text-on-surface hover:bg-surface-container-lowest hover:border-[#d4252c] hover:text-[#d4252c]"
                               }`}
                             >
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                                  isComfortable
-                                    ? "bg-emerald-500"
-                                    : isLearning
-                                    ? "bg-amber-500"
-                                    : "bg-sky-500"
-                                }`}
-                              />
+                              {isLearning && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                              )}
                               <span>{skill.name}</span>
                             </span>
                           );
