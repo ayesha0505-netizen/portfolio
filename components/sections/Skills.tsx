@@ -3,9 +3,7 @@
 import React, { useState } from "react";
 import {
   Terminal,
-  Monitor,
-  Smartphone,
-  Server,
+  Layers,
   Database,
   Wrench,
   Cpu,
@@ -25,127 +23,89 @@ export interface SkillCategory {
   title: string;
   icon: LucideIcon;
   description: string;
-  tier: "primary" | "secondary" | "foundation";
-  tierLabel: string;
   skills: SkillItem[];
 }
 
 const skillCategories: SkillCategory[] = [
-  // ── GROUP 1: PRIMARY DEVELOPMENT FOCUS (Web & Mobile) ──
   {
     id: "languages",
     number: "01",
     title: "Languages",
     icon: Terminal,
-    description: "Core programming and scripting languages for web structure, styling, and algorithmic logic.",
-    tier: "primary",
-    tierLabel: "Core Focus",
+    description: "Core programming and scripting languages for frontend, backend, and algorithmic problem solving.",
     skills: [
-      { name: "HTML5", level: "comfortable" },
-      { name: "CSS3", level: "comfortable" },
       { name: "JavaScript", level: "comfortable" },
       { name: "TypeScript", level: "basic" },
+      { name: "Java", level: "learning" },
       { name: "Python", level: "basic" },
       { name: "C", level: "basic" },
-      { name: "Java", level: "learning" },
+      { name: "HTML5", level: "comfortable" },
+      { name: "CSS3", level: "comfortable" },
     ],
   },
   {
-    id: "frontend",
+    id: "frameworks",
     number: "02",
-    title: "Frontend Development",
-    icon: Monitor,
-    description: "Modern component-driven web interfaces, responsive styling, and state management.",
-    tier: "primary",
-    tierLabel: "Core Focus",
+    title: "Frameworks & Libraries",
+    icon: Layers,
+    description: "Modern component architectures, web & mobile app frameworks, and state management.",
     skills: [
-      { name: "React.js", level: "basic" },
+      { name: "React.js", level: "comfortable" },
       { name: "Next.js", level: "basic" },
-      { name: "Tailwind CSS", level: "basic" },
-      { name: "shadcn/ui", level: "basic" },
-      { name: "Redux Toolkit", level: "learning" },
-    ],
-  },
-  {
-    id: "mobile",
-    number: "03",
-    title: "Mobile Development",
-    icon: Smartphone,
-    description: "Cross-platform mobile apps for Android and iOS using the React Native ecosystem.",
-    tier: "primary",
-    tierLabel: "Core Focus",
-    skills: [
       { name: "React Native", level: "basic" },
+      { name: "Node.js", level: "basic" },
+      { name: "Spring Boot", level: "learning" },
+      { name: "Tailwind CSS", level: "comfortable" },
+      { name: "Redux Toolkit", level: "learning" },
+      { name: "shadcn/ui", level: "basic" },
       { name: "Expo", level: "basic" },
       { name: "React Navigation", level: "basic" },
       { name: "AsyncStorage", level: "basic" },
     ],
   },
-
-  // ── GROUP 2: EXPANDING STACK & INFRASTRUCTURE ──
   {
-    id: "backend",
-    number: "04",
-    title: "Backend & APIs",
-    icon: Server,
-    description: "Server-side integration, HTTP communications, authentication, and backend services.",
-    tier: "secondary",
-    tierLabel: "Expanding Stack",
-    skills: [
-      { name: "Node.js", level: "basic" },
-      { name: "REST APIs", level: "basic" },
-      { name: "Authentication", level: "basic" },
-      { name: "Spring Boot", level: "learning" },
-    ],
-  },
-  {
-    id: "database",
-    number: "05",
-    title: "Database",
+    id: "databases",
+    number: "03",
+    title: "Databases & ORMs",
     icon: Database,
-    description: "Relational data querying, schema modeling, ORMs, and cloud-hosted data stores.",
-    tier: "secondary",
-    tierLabel: "Expanding Stack",
+    description: "Relational databases, SQL querying, schema modeling, ORMs, and cloud data platforms.",
     skills: [
       { name: "MySQL", level: "comfortable" },
-      { name: "SQL", level: "comfortable" },
+      { name: "PostgreSQL", level: "basic" },
       { name: "Prisma ORM", level: "basic" },
       { name: "Firebase", level: "basic" },
     ],
   },
   {
     id: "tools",
-    number: "06",
-    title: "Tools & Deployment",
+    number: "04",
+    title: "Tools & Platforms",
     icon: Wrench,
-    description: "Version control, modern developer environments, build tools, and design handoff.",
-    tier: "secondary",
-    tierLabel: "Expanding Stack",
+    description: "Version control, API testing, containerization, cloud deployment, and design tooling.",
     skills: [
-      { name: "VS Code", level: "comfortable" },
-      { name: "Vercel", level: "comfortable" },
       { name: "Git", level: "basic" },
       { name: "GitHub", level: "basic" },
       { name: "Docker", level: "basic" },
+      { name: "Postman", level: "basic" },
+      { name: "Vercel", level: "comfortable" },
       { name: "Figma", level: "basic" },
+      { name: "VS Code", level: "comfortable" },
     ],
   },
-
-  // ── GROUP 3: ACADEMIC & ENGINEERING BEDROCK ──
   {
     id: "cs",
-    number: "07",
-    title: "Computer Science",
+    number: "05",
+    title: "Computer Science & Architecture",
     icon: Cpu,
-    description: "Core computer science theory, systems architecture, problem solving, and algorithmic theory.",
-    tier: "foundation",
-    tierLabel: "Academic Bedrock",
+    description: "Core computer science fundamentals, systems architecture, secure protocols, and software design.",
     skills: [
-      { name: "OOP", level: "basic" },
+      { name: "Data Structures & Algorithms (DSA)", level: "learning" },
+      { name: "Object-Oriented Programming (OOP)", level: "basic" },
       { name: "DBMS", level: "basic" },
       { name: "Operating Systems", level: "basic" },
       { name: "Computer Networks", level: "basic" },
-      { name: "DSA", level: "learning" },
+      { name: "REST APIs", level: "basic" },
+      { name: "Authentication", level: "basic" },
     ],
   },
 ];
@@ -168,7 +128,7 @@ export default function Skills() {
             Technologies I Work With
           </h2>
           <p className="text-sm text-secondary leading-relaxed">
-            A structured breakdown of my core technical stack as an undergraduate IT student—focused primarily on Web &amp; Mobile Development, with backend services, databases, and core foundations as active expansion areas.
+            A structured breakdown of my technical stack—organized by Languages, Frameworks, Databases, Developer Tools, and Computer Science foundations.
           </p>
         </div>
 
@@ -179,7 +139,7 @@ export default function Skills() {
           <div className="px-5 py-3 sm:px-6 sm:py-3.5 bg-surface-container-low/60 border-b border-surface-container-highest flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-[11px] sm:text-xs text-secondary">
             <div className="flex items-center gap-2 font-mono font-semibold text-on-surface tracking-wide uppercase text-[10.5px]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#d4252c]" />
-              <span>35 Core Technologies Across 7 Domains</span>
+              <span>36 Technologies Across 5 Technical Categories</span>
             </div>
 
             {/* Proficiency Legend */}
@@ -207,7 +167,7 @@ export default function Skills() {
               return (
                 <div
                   key={category.id}
-                  className="px-5 py-4 sm:px-6 sm:py-4.5 hover:bg-surface-container-low/30 transition-colors duration-150 group"
+                  className="px-5 py-4 sm:px-6 sm:py-5 hover:bg-surface-container-low/30 transition-colors duration-150 group"
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-6 items-start lg:items-center">
                     
@@ -219,26 +179,15 @@ export default function Skills() {
                           <Icon className="w-3.5 h-3.5" />
                         </div>
 
-                        {/* Title, Number & Badge */}
+                        {/* Title & Number */}
                         <div className="min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
+                          <div className="flex items-center gap-2">
                             <span className="text-[11px] font-mono font-bold text-[#d4252c]">
                               {category.number}
                             </span>
                             <h3 className="text-sm font-semibold text-on-surface leading-tight">
                               {category.title}
                             </h3>
-                            <span
-                              className={`text-[9.5px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border ${
-                                category.tier === "primary"
-                                  ? "bg-red-50 text-[#d4252c] border-red-200/80"
-                                  : category.tier === "secondary"
-                                  ? "bg-slate-100 text-slate-700 border-slate-200"
-                                  : "bg-indigo-50 text-indigo-700 border-indigo-200/80"
-                              }`}
-                            >
-                              {category.tierLabel}
-                            </span>
                           </div>
 
                           <p className="text-[11.5px] text-secondary mt-1 leading-snug">
